@@ -1,0 +1,19 @@
+# --- Framework Principal ---
+Flask==3.0.3
+Flask-Cors==4.0.1
+
+# --- Banco de Dados ---
+Flask-SQLAlchemy==3.1.1
+Flask-Migrate==4.0.7
+psycopg==3.1.19 # MODERNO: Substitui o psycopg2-binary, é mais rápido e fácil de instalar.
+
+# --- Utilitários ---
+python-dotenv==1.0.1
+gunicorn==22.0.0 # Essencial para produção em ambientes Linux/macOS.
+
+# --- API e Autenticação ---
+Flasgger==0.9.7.1
+PyJWT==2.8.0
+
+# OBS: A dependência 'werkzeug' é gerenciada pelo Flask, 
+# por isso não é mais necessário fixá-la aqui.
