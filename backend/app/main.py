@@ -4,19 +4,20 @@ from flask_cors import CORS
 from flasgger import Swagger
 from .infrastructure.database import db, migrate
 from .presentation.api import register_blueprints
-from .config import Config
+from .config import config_by_name
 
 def create_app():
     """Application factory."""
     app = Flask(__name__)
-    app.config.from_object(Config)
+    
+    env = os.getenv('FLASK_ENV', 'development')
+    app.config.from_object(config_by_name[env])
 
-    # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
-    CORS(app, resources={r"/api/*": {"origins": "*"}}) # Allow frontend to access API
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-    # Swagger/Flasgger setup
+    # Configuração do Swagger
     swagger_config = {
         "headers": [],
         "specs": [
@@ -33,11 +34,6 @@ def create_app():
     }
     Swagger(app, config=swagger_config)
 
-    # Register API blueprints
     register_blueprints(app)
 
     return app
-
-if __name__ == '__main__':
-    app = create_app()
-    app.run()

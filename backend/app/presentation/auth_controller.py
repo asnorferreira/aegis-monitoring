@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
 from flasgger import swag_from
-from werkzeug.security import generate_password_hash
 from ..application.services import AuthService
 from ..infrastructure.repositories.sql_repositories import SQLUserRepository
 

@@ -4,7 +4,7 @@ from typing import List, Optional
 
 @dataclass
 class User:
-    id: int
+    id: Optional[int]
     email: str
     password_hash: str
 

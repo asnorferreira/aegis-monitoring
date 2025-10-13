@@ -1,6 +1,7 @@
 # --- Framework Principal ---
 Flask==3.0.3
 Flask-Cors==4.0.1
+Werkzeug==3.0.3
 
 # --- Banco de Dados ---
 Flask-SQLAlchemy==3.1.1
@@ -15,5 +16,8 @@ gunicorn==22.0.0 # Essencial para produção em ambientes Linux/macOS.
 Flasgger==0.9.7.1
 PyJWT==2.8.0
 
-# OBS: A dependência 'werkzeug' é gerenciada pelo Flask, 
-# por isso não é mais necessário fixá-la aqui.
+# --- Comunicação em Tempo Real (para a próxima etapa) ---
+paho-mqtt==2.1.0
+
+# --- SSL/TLS ---
+certifi==2024.8.30

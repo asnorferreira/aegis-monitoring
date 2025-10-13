@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:13
+    image: postgres:15-bookworm
     container_name: aegis_db
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-user}
@@ -17,6 +17,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   backend:
     build: .
@@ -30,10 +31,36 @@ services:
         condition: service_healthy
     env_file:
       - .env
-    command: >
-      sh -c "flask db upgrade &&
-             python -m app.infrastructure.seeding.seed_runner &&
-             flask run --host=0.0.0.0"
+    # command: >
+    #   sh -c "flask db upgrade &&
+    #          python -m app.infrastructure.seeding.seed_runner &&
+    #          gunicorn --bind 0.0.0.0:5000 'app.main:create_app()'"
+    restart: unless-stopped
+
+  listener:
+    build: 
+      context: .
+    container_name: aegis_listener
+    volumes:
+      - .:/app
+    depends_on:
+      - backend
+    env_file:
+      - .env
+    command: python mqtt_listener.py
+
+  simulator:
+    build: 
+      context: .
+    container_name: aegis_simulator
+    volumes:
+      - .:/app
+    depends_on:
+      - backend
+    env_file:
+      - .env
+    command: python sensor_simulator.py
+    restart: unless-stopped
 
 volumes:
   postgres_data:

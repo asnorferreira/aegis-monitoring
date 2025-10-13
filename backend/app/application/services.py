@@ -3,7 +3,7 @@ import jwt
 from typing import List, Optional
 from werkzeug.security import check_password_hash, generate_password_hash
 from ..domain.repositories import IUserRepository, IStructureRepository
-from ..domain.models import Structure, SensorData
+from ..domain.models import User, Structure, SensorData
 from ..config import Config
 
 class AuthService:

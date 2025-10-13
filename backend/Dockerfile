@@ -1,30 +1,29 @@
 # Use an official Python runtime as a parent image
-FROM python:3.11-slim
+FROM python:3.11-slim-bookworm
 
-# Set the working directory in the container
+# Variáveis de ambiente para evitar a criação de arquivos .pyc
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Define o diretório de trabalho
 WORKDIR /app
 
-# Update
-RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
-    build-essential gcc \
+# Instala dependências do sistema, incluindo libpq (necessária para psycopg)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
-
-# Copy the requirements file into the container at /app
+    
+# Copia e instala as dependências do Python
 COPY requirements.txt .
-
-# Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application's code into the container
+# Copia o restante do código da aplicação
 COPY . .
 
-# Make port 5000 available to the world outside this container
+# Expõe a porta que o Gunicorn irá rodar
 EXPOSE 5000
 
-# Define environment variable
-ENV FLASK_APP=app/main.py
-ENV FLASK_RUN_HOST=0.0.0.0
-
-# Run the command to start the Flask server
-# The final command is provided in .yml to handle migrations and seeding.
-CMD ["flask", "run"]
+# Comando para iniciar a aplicação em produção
+# CMD ["bash", "-c", "flask db upgrade && gunicorn --bind 0.0.0.0:5000 app.main:create_app()"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app.main:create_app()"]

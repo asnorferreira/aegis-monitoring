@@ -1,4 +1,5 @@
 from . import db
+from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
 
 class UserModel(db.Model):
@@ -7,6 +8,11 @@ class UserModel(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __init__(self, email: str, password_hash: str, **kwargs): # <-- ADICIONE ESTE MÉTODO
+        super().__init__(**kwargs)
+        self.email = email
+        self.password_hash = password_hash
 
 class StructureModel(db.Model):
     __tablename__ = 'structures'
@@ -20,8 +26,15 @@ class StructureModel(db.Model):
 
 class SensorDataModel(db.Model):
     __tablename__ = 'sensor_data'
-    id = db.Column(db.Integer, primary_key=True)
-    structure_id = db.Column(db.Integer, db.ForeignKey('structures.id'), nullable=False)
-    sensor_type = db.Column(db.String(50), nullable=False) # Vibration, Strain, Temperature
-    value = db.Column(db.Float, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    structure_id: Mapped[int] = mapped_column(db.ForeignKey('structures.id'), nullable=False)
+    sensor_type: Mapped[str] = mapped_column(db.String(50), nullable=False)
+    value: Mapped[float] = mapped_column(db.Float, nullable=False)
+    timestamp: Mapped[datetime] = mapped_column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    def __init__(self, structure_id: int, sensor_type: str, value: float, timestamp: datetime):
+        self.structure_id = structure_id
+        self.sensor_type = sensor_type
+        self.value = value
+        self.timestamp = timestamp

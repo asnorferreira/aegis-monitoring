@@ -1,4 +1,5 @@
 from typing import List, Optional
+from sqlalchemy import asc
 from ...domain.models import User, Structure, SensorData
 from ...domain.repositories import IUserRepository, IStructureRepository
 from ..database import db
@@ -12,11 +13,40 @@ class SQLUserRepository(IUserRepository):
         return None
 
     def add(self, user: User) -> User:
-        # Note: This is a simplified add method. In a real app, password would be hashed here.
         new_user = UserModel(email=user.email, password_hash=user.password_hash)
         db.session.add(new_user)
         db.session.commit()
         return User(id=new_user.id, email=new_user.email, password_hash=new_user.password_hash)
+    
+    def find_by_id(self, user_id: int) -> Optional[User]:
+        user_model = UserModel.query.get(user_id)
+        if user_model:
+            return User(id=user_model.id, email=user_model.email, password_hash=user_model.password_hash)
+        return None
+
+    def find_all(self) -> List[User]:
+        user_models = UserModel.query.all()
+        return [
+            User(id=m.id, email=m.email, password_hash=m.password_hash)
+            for m in user_models
+        ]
+
+    def update(self, user: User) -> Optional[User]:
+        user_model = UserModel.query.get(user.id)
+        if user_model:
+            user_model.email = user.email
+            user_model.password_hash = user.password_hash
+            db.session.commit()
+            return user
+        return None
+
+    def delete(self, user_id: int) -> bool:
+        user_model = UserModel.query.get(user_id)
+        if user_model:
+            db.session.delete(user_model)
+            db.session.commit()
+            return True
+        return False
 
 class SQLStructureRepository(IStructureRepository):
     def find_all(self) -> List[Structure]:
@@ -42,7 +72,7 @@ class SQLStructureRepository(IStructureRepository):
         if sensor_type:
             query = query.filter_by(sensor_type=sensor_type)
         
-        models = query.order_by(SensorDataModel.timestamp.asc()).all()
+        models = query.order_by(asc(SensorDataModel.timestamp)).all()
         return [
             SensorData(
                 id=m.id, structure_id=m.structure_id, sensor_type=m.sensor_type,
