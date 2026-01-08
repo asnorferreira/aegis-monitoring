@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography, Button, Container, Box, Grid, Paper, Icon } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Container, Box, Grid, Paper } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 import ShowChartIcon from '@mui/icons-material/ShowChart';

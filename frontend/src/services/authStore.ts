@@ -9,7 +9,6 @@ interface AuthState {
   logout: () => void;
 }
 
-// Usamos o middleware 'persist' para salvar o token no localStorage automaticamente.
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
@@ -24,9 +23,8 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: 'auth-storage', // nome da chave no localStorage
+      name: 'auth-storage',
       onRehydrateStorage: () => (state) => {
-        // Garante que isAuthenticated seja atualizado quando o estado é carregado do storage
         if (state) {
           state.isAuthenticated = !!state.token;
         }

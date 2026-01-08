@@ -34,7 +34,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           flexGrow: 1,
           p: 3,
           width: '100%',
-          mt: 8, // toolbar height
+          mt: 8,
         }}
       >
         {children}

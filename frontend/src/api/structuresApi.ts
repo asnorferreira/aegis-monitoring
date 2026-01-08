@@ -1,5 +1,5 @@
+import type { SensorData, Structure } from '../types';
 import axiosClient from './axiosClient';
-import { Structure, SensorData } from '../types';
 
 export const getStructures = async (): Promise<Structure[]> => {
   const response = await axiosClient.get('/structures/');

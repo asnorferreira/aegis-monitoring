@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { getStructures } from '../api/structuresApi';
-import { Structure } from '../types';
 import {
   Container, Typography, Box, Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Chip, CircularProgress, Alert, Button
 } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import type { Structure } from '../types';
 
 const DashboardPage = () => {
   const [structures, setStructures] = useState<Structure[]>([]);
